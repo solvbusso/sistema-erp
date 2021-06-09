@@ -8,6 +8,6 @@ import java.util.Collection;
 
 public interface ProductoRepository extends CrudRepository <Producto, Integer> {
 
-    @Query(value = "select * from producto where id_proveedor = :idProv", nativeQuery = true)
-    Collection<Integer> getProductoByProv(@Param("idProv") int idProv);
+    @Query(value = "select nombre from producto where id_proveedor = :idProv", nativeQuery = true)
+    Collection<String> getProductoByProv(@Param("idProv") int idProv);
 }

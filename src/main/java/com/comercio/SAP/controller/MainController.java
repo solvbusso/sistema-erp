@@ -121,7 +121,7 @@ public class MainController {
 
     @GetMapping(path = "/producto/proveedor/{idProv}")
     public @ResponseBody
-    Collection<Integer> getProductoByProv(@PathVariable("idProv") int idProv) {
+    Collection<String> getProductoByProv(@PathVariable("idProv") int idProv) {
 
         return productoRepository.getProductoByProv(idProv);
     }

@@ -11,5 +11,5 @@ import java.util.Collection;
 public interface CompraRepository extends CrudRepository <Compra, Integer> {
 
     @Query(value = "select * from compra where month(fecha) = :month", nativeQuery = true)
-    Collection<Integer> getComprasByMonth(@Param("month") int month);
+    Collection<Compra> getComprasByMonth(@Param("month") int month);
 }

@@ -3,6 +3,8 @@ package com.comercio.SAP.controller;
 import com.comercio.SAP.model.*;
 import com.comercio.SAP.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -96,7 +98,7 @@ public class MainController {
 
     @GetMapping(path = "/compra/mes/{month}")
     public @ResponseBody
-    Collection<Integer> getComprasByMonth(@PathVariable("month") int month) {
+    Collection<Compra> getComprasByMonth(@PathVariable("month") int month) {
 
         return compraRepository.getComprasByMonth(month);
     }
@@ -217,6 +219,30 @@ public class MainController {
         return usuarioRepository.findAll();
     }
 
+    @DeleteMapping(path = "/usuarioLoggeado/{id_usuarioLoggeado}/delete/usuario/{id_usuario}")
+    public @ResponseBody
+
+    ResponseEntity<GeneralResponse> deleteUsuarioByRol(@PathVariable("id_usuarioLoggeado") int id_usuarioLoggeado,@PathVariable("id_usuario") int id_usuario) {
+        GeneralResponse response = new GeneralResponse();
+
+        try {
+            Usuario usuarioLoggeado = usuarioRepository.findById(id_usuarioLoggeado).get();
+            if (usuarioLoggeado.getRol().getId_rol() == 3) {
+                usuarioRepository.deleteById(id_usuario);
+                response.setCode(HttpStatus.OK.value());
+                response.setMessage("El registro id: " + id_usuario + " fue eliminado");
+                return ResponseEntity.ok(response);
+            }
+            response.setCode(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("Usuario no autorizado a borrar registros");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.setCode(HttpStatus.CONFLICT.value());
+            response.setMessage(HttpStatus.CONFLICT.getReasonPhrase() + " - " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
     @DeleteMapping(path = "/proveedor/delete/{id_estado}")
     public @ResponseBody Iterable<Proveedor> deleteProveedorById(@PathVariable("id_proveedor") int id_proveedor) {
 
@@ -245,18 +271,10 @@ public class MainController {
         return ventaRepository.findAll();
     }
 
-
-
-
-
-
-
     @DeleteMapping(path = "/producto/delete/{id_producto}")
     public @ResponseBody Iterable<Producto> deleteProductoById(@PathVariable("id_producto") int id_producto) {
 
         productoRepository.deleteById(id_producto);
         return productoRepository.findAll();
     }
-
-
 }
